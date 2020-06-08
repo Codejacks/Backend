@@ -94,6 +94,38 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
+        public async Task<IEnumerable<InfectionReportMetadata>> GetLatestAsync(long lastTimestamp, CancellationToken cancellationToken = default)
+        {
+            // Create LINQ query
+            var queryable = this.Container
+                .GetItemLinqQueryable<InfectionReportRecord>();
+
+            long timeStampFilter = this._getTimestampFilter(lastTimestamp);
+
+            // Execute query
+            var iterator = queryable
+                .Where(r =>
+                    r.Timestamp > timeStampFilter
+                    && r.Version == InfectionReportRecord.CURRENT_RECORD_VERSION
+                )
+                .Select(r => new InfectionReportMetadata
+                {
+                    Id = r.Id,
+                    Timestamp = r.Timestamp
+                })
+                .ToFeedIterator();
+
+            List<InfectionReportMetadata> results = new List<InfectionReportMetadata>();
+
+            while (iterator.HasMoreResults)
+            {
+                results.AddRange(await iterator.ReadNextAsync());
+            }
+
+            return results;
+        }
+
+        /// <inheritdoc/>
         public async Task<IEnumerable<InfectionReportMetadata>> GetLatestAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             // Get boundaries for provided region
@@ -134,7 +166,29 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<long> GetLatestRegionSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<long> GetLatestDataSizeAsync(long lastTimestamp, CancellationToken cancellationToken = default)
+        {
+            // Create LINQ query
+            var queryable = this.Container
+                .GetItemLinqQueryable<InfectionReportRecord>();
+
+            long timeStampFilter = this._getTimestampFilter(lastTimestamp);
+
+            // Execute query
+            var size = await queryable
+                .Where(r =>
+                    r.Timestamp > timeStampFilter
+                    && r.Version == InfectionReportRecord.CURRENT_RECORD_VERSION
+                )
+                .Select(r => r.Size)
+                .SumAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return size;
+        }
+
+        /// <inheritdoc/>
+        public async Task<long> GetLatestDataSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             // Get boundaries for provided region
             Point regionPoint = new Point(region.LongitudePrefix, region.LatitudePrefix);

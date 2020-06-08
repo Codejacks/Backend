@@ -72,22 +72,6 @@ namespace CovidSafe.API.v20200601
                 )
                 .ReverseMap();
 
-            // BlueToothSeed -> BluetoothSeed
-            CreateMap<BlueToothSeed, BluetoothSeed>()
-                .ForMember(
-                    bs => bs.BeginTimestamp,
-                    op => op.MapFrom(s => s.SequenceStartTime)
-                )
-                .ForMember(
-                    bs => bs.EndTimestamp,
-                    op => op.MapFrom(s => s.SequenceEndTime)
-                )
-                .ForMember(
-                    bs => bs.Seed,
-                    op => op.MapFrom(s => s.Seed)
-                )
-                .ReverseMap();
-
             // AreaMatch -> AreaReport
             CreateMap<AreaMatch, AreaReport>()
                 .ForMember(
@@ -100,29 +84,6 @@ namespace CovidSafe.API.v20200601
                 )
                 .ReverseMap();
 
-            // SelfReportRequest -> InfectionReport
-            // This is only a request object so no ReverseMap is necessary
-            CreateMap<SelfReportRequest, InfectionReport>()
-                .ForMember(
-                    ir => ir.BluetoothSeeds,
-                    op => op.MapFrom(sr => sr.Seeds)
-                )
-                // Currently no AreaReports in a SelfReportRequest
-                .ForMember(
-                    ir => ir.AreaReports,
-                    op => op.Ignore()
-                )
-                // Not specified by users
-                .ForMember(
-                    ir => ir.BluetoothMatchMessage,
-                    op => op.Ignore()
-                )
-                // Not specified by users
-                .ForMember(
-                    ir => ir.BooleanExpression,
-                    op => op.Ignore()
-                );
-
             // MatchMessage -> InfectionReport
             CreateMap<MatchMessage, InfectionReport>()
                 .ForMember(
@@ -130,16 +91,17 @@ namespace CovidSafe.API.v20200601
                     op => op.MapFrom(mm => mm.AreaMatches)
                 )
                 .ForMember(
-                    ir => ir.BluetoothSeeds,
-                    op => op.MapFrom(mm => mm.BluetoothSeeds)
-                )
-                .ForMember(
                     ir => ir.BooleanExpression,
                     op => op.MapFrom(mm => mm.BoolExpression)
                 )
                 .ForMember(
-                    // Not supported in v20200415
+                    // Not supported in >= v20200415
                     ir => ir.BluetoothMatchMessage,
+                    op => op.Ignore()
+                )
+                .ForMember(
+                    // Not supported in >= v20200601
+                    ir => ir.BluetoothSeeds,
                     op => op.Ignore()
                 )
                 // Other properties have the same name+type

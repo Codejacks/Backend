@@ -8,7 +8,6 @@ using AutoMapper;
 using CovidSafe.API.v20200601.Protos;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Reports;
-using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -88,7 +87,7 @@ namespace CovidSafe.API.v20200601.Controllers
 
                 return Ok(response);
             }
-            catch(RequestValidationFailedException ex)
+            catch(Entities.Validation.RequestValidationFailedException ex)
             {
                 // Only return validation results
                 return BadRequest(ex.ValidationResult);

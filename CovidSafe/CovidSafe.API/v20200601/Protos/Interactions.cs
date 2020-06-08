@@ -13,10 +13,7 @@ namespace CovidSafe.API.v20200601.Protos
         global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
-        [global::ProtoBuf.ProtoMember(1, Name = @"region")]
-        public Region Region { get; set; }
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"last_query_time")]
+        [global::ProtoBuf.ProtoMember(1, Name = @"last_query_time")]
         public long LastQueryTime { get; set; }
 
     }
@@ -74,13 +71,6 @@ namespace CovidSafe.API.v20200601.Protos
         [global::ProtoBuf.ProtoMember(2, Name = @"area_matches")]
         public global::System.Collections.Generic.List<AreaMatch> AreaMatches { get; } = new global::System.Collections.Generic.List<AreaMatch>();
 
-        [global::ProtoBuf.ProtoMember(3, Name = @"bluetooth_seeds")]
-        public global::System.Collections.Generic.List<BlueToothSeed> BluetoothSeeds { get; } = new global::System.Collections.Generic.List<BlueToothSeed>();
-
-        [global::ProtoBuf.ProtoMember(4, Name = @"bluetooth_match_message")]
-        [global::System.ComponentModel.DefaultValue("")]
-        public string BluetoothMatchMessage { get; set; } = "";
-
     }
 
     [global::ProtoBuf.ProtoContract()]
@@ -96,21 +86,6 @@ namespace CovidSafe.API.v20200601.Protos
 
         [global::ProtoBuf.ProtoMember(2, Name = @"areas")]
         public global::System.Collections.Generic.List<Area> Areas { get; } = new global::System.Collections.Generic.List<Area>();
-
-    }
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class SelfReportRequest : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"seeds")]
-        public global::System.Collections.Generic.List<BlueToothSeed> Seeds { get; } = new global::System.Collections.Generic.List<BlueToothSeed>();
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"region")]
-        public Region Region { get; set; }
 
     }
 
@@ -165,25 +140,6 @@ namespace CovidSafe.API.v20200601.Protos
     }
 
     [global::ProtoBuf.ProtoContract()]
-    public partial class BlueToothSeed : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"seed")]
-        [global::System.ComponentModel.DefaultValue("")]
-        public string Seed { get; set; } = "";
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"sequence_start_time")]
-        public long SequenceStartTime { get; set; }
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"sequence_end_time")]
-        public long SequenceEndTime { get; set; }
-
-    }
-
-    [global::ProtoBuf.ProtoContract()]
     public partial class Area : global::ProtoBuf.IExtensible
     {
         private global::ProtoBuf.IExtension __pbn__extensionData;
@@ -216,6 +172,35 @@ namespace CovidSafe.API.v20200601.Protos
 
         [global::ProtoBuf.ProtoMember(2, Name = @"longitude")]
         public double Longitude { get; set; }
+
+    }
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class RequestValidationResult : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"failures")]
+        public global::System.Collections.Generic.List<RequestValidationFailure> Failures { get; } = new global::System.Collections.Generic.List<RequestValidationFailure>();
+
+    }
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class RequestValidationFailure : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"message")]
+        [global::System.ComponentModel.DefaultValue("")]
+        public string Message { get; set; } = "";
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"property")]
+        [global::System.ComponentModel.DefaultValue("")]
+        public string Property { get; set; } = "";
 
     }
 

@@ -130,7 +130,7 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
                 };
 
                 long size = await this._reportService
-                    .GetLatestRegionDataSizeAsync(region, lastTimestamp, cancellationToken);
+                    .GetLatestDataSizeAsync(region, lastTimestamp, cancellationToken);
 
                 // Set Content-Length header with calculated size
                 Response.ContentLength = size;

@@ -15,11 +15,25 @@ namespace CovidSafe.DAL.Repositories
         /// <summary>
         /// Pulls a list of the latest <see cref="InfectionReport"/> objects, based on client parameters
         /// </summary>
+        /// <param name="lastTimestamp">Timestamp of latest client <see cref="InfectionReport"/> for region, in ms since UNIX epoch</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Collection of <see cref="InfectionReportMetadata"/> objects</returns>
+        Task<IEnumerable<InfectionReportMetadata>> GetLatestAsync(long lastTimestamp, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Pulls a list of the latest <see cref="InfectionReport"/> objects, based on client parameters
+        /// </summary>
         /// <param name="region">Target <see cref="Region"/></param>
         /// <param name="lastTimestamp">Timestamp of latest client <see cref="InfectionReport"/> for region, in ms since UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Collection of <see cref="InfectionReportMetadata"/> objects</returns>
         Task<IEnumerable<InfectionReportMetadata>> GetLatestAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Retrieves the data size, in bytes, of the latest <see cref="InfectionReport"/> data based on a last query timestamp
+        /// </summary>
+        /// <param name="lastTimestamp">Timestamp of latest client <see cref="InfectionReport"/> for region, in ms since UNIX epoch</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Data size, in bytes</returns>
+        Task<long> GetLatestDataSizeAsync(long lastTimestamp, CancellationToken cancellationToken = default);
         /// <summary>
         /// Retrieves the data size, in bytes, of a region's latest <see cref="InfectionReport"/> data
         /// </summary>
@@ -27,7 +41,7 @@ namespace CovidSafe.DAL.Repositories
         /// <param name="lastTimestamp">Timestamp of latest client <see cref="InfectionReport"/> for region, in ms since UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Data size, in bytes</returns>
-        Task<long> GetLatestRegionSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default);
+        Task<long> GetLatestDataSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default);
         /// <summary>
         /// Pulls a collection of <see cref="InfectionReport"/> objects, based on provided identifiers
         /// </summary>

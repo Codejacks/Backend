@@ -202,7 +202,7 @@ namespace CovidSafe.DAL.Tests.Services
 
             // Act
             long result = await this._service
-                .GetLatestRegionDataSizeAsync(null, 0, CancellationToken.None);
+                .GetLatestDataSizeAsync(null, 0, CancellationToken.None);
 
             // Assert
             // Exception caught by decorator
@@ -221,7 +221,7 @@ namespace CovidSafe.DAL.Tests.Services
 
             // Act
             long result = await this._service
-                .GetLatestRegionDataSizeAsync(null, 0, CancellationToken.None);
+                .GetLatestDataSizeAsync(null, 0, CancellationToken.None);
 
             // Assert
             // Exception caught by decorator
@@ -243,11 +243,11 @@ namespace CovidSafe.DAL.Tests.Services
             };
             long expectedResult = 1024;
             this._repo
-                .Setup(r => r.GetLatestRegionSizeAsync(It.IsAny<Region>(), It.IsAny<long>(), CancellationToken.None))
+                .Setup(r => r.GetLatestDataSizeAsync(It.IsAny<Region>(), It.IsAny<long>(), CancellationToken.None))
                 .Returns(Task.FromResult(expectedResult));
 
             // Act
-            long result = await this._service.GetLatestRegionDataSizeAsync(
+            long result = await this._service.GetLatestDataSizeAsync(
                 region,
                 DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                 CancellationToken.None

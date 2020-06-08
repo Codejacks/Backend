@@ -350,7 +350,7 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
             long repoResponse = 1024;
             this._repo
                 .Setup(
-                    r => r.GetLatestRegionSizeAsync(
+                    r => r.GetLatestDataSizeAsync(
                         It.IsAny<Entities.Geospatial.Region>(),
                         It.IsAny<long>(),
                         CancellationToken.None

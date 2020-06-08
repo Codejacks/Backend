@@ -20,24 +20,41 @@ namespace CovidSafe.DAL.Services
         /// <returns>Collection of <see cref="InfectionReport"/> objects</returns>
         Task<IEnumerable<InfectionReport>> GetByIdsAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default);
         /// <summary>
-        /// Retrieves the latest <see cref="InfectionReportMetadata"/> for a client
+        /// Returns the latest size of <see cref="InfectionReport"/> data based on a previous query timestamp
+        /// </summary>
+        /// <param name="lastTimestamp">Timestamp of latest client <see cref="InfectionReport"/>, in ms since UNIX epoch</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns></returns>
+        Task<long> GetLatestDataSizeAsync(long lastTimestamp, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Returns the latest size of <see cref="InfectionReport"/> data for a given <see cref="Region"/> and previous query timestamp
+        /// </summary>
+        /// <param name="region">Target <see cref="Region"/></param>
+        /// <param name="lastTimestamp">Timestamp of latest client <see cref="InfectionReport"/>, in ms since UNIX epoch</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns></returns>
+        Task<long> GetLatestDataSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Retrieves the latest <see cref="InfectionReportMetadata"/> for a client based on previous query timestamp
+        /// </summary>
+        /// <param name="lastTimestamp">Timestamp of latest client <see cref="InfectionReport"/>, in ms since UNIX epoch</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Collection of <see cref="InfectionReportMetadata"/> objects</returns>
+        /// <remarks>
+        /// Sister call to <see cref="GetLatestDataSizeAsync(long, CancellationToken)"/>.
+        /// </remarks>
+        Task<IEnumerable<InfectionReportMetadata>> GetLatestInfoAsync(long lastTimestamp, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Retrieves the latest <see cref="InfectionReportMetadata"/> for a client based on <see cref="Region"/> and previous query timestamp
         /// </summary>
         /// <param name="region">Target <see cref="Region"/></param>
         /// <param name="lastTimestamp">Timestamp of latest client <see cref="InfectionReport"/>, in ms since UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Collection of <see cref="InfectionReportMetadata"/> objects</returns>
         /// <remarks>
-        /// Sister call to <see cref="GetLatestRegionDataSizeAsync(Region, long, CancellationToken)"/>.
+        /// Sister call to <see cref="GetLatestDataSizeAsync(Region, long, CancellationToken)"/>.
         /// </remarks>
         Task<IEnumerable<InfectionReportMetadata>> GetLatestInfoAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default);
-        /// <summary>
-        /// Returns the latest size of <see cref="InfectionReport"/> data for a given <see cref="Region"/>
-        /// </summary>
-        /// <param name="region">Target <see cref="Region"/></param>
-        /// <param name="lastTimestamp">Timestamp of latest client <see cref="InfectionReport"/>, in ms since UNIX epoch</param>
-        /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns></returns>
-        Task<long> GetLatestRegionDataSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default);
         /// <summary>
         /// Store a new <see cref="InfectionReport"/> based on an <see cref="AreaReport"/>
         /// </summary>

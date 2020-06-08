@@ -64,6 +64,61 @@ namespace CovidSafe.DAL.Services
         }
 
         /// <inheritdoc/>
+        public async Task<long> GetLatestDataSizeAsync(long lastTimestamp, CancellationToken cancellationToken = default)
+        {
+            RequestValidationResult validationResult = Validator.ValidateTimestamp(lastTimestamp, parameterName: nameof(lastTimestamp));
+
+            if (validationResult.Passed)
+            {
+                // Get messages from database
+                return await this._reportRepo.GetLatestDataSizeAsync(lastTimestamp, cancellationToken);
+            }
+            else
+            {
+                throw new RequestValidationFailedException(validationResult);
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<long> GetLatestDataSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
+        {
+            if(region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
+            }
+
+            RequestValidationResult validationResult = region.Validate();
+            validationResult.Combine(Validator.ValidateTimestamp(lastTimestamp, parameterName: nameof(lastTimestamp)));
+
+            if(validationResult.Passed)
+            {
+                // Get messages from database
+                return await this._reportRepo.GetLatestDataSizeAsync(region, lastTimestamp, cancellationToken);
+            }
+            else
+            {
+                throw new RequestValidationFailedException(validationResult);
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<InfectionReportMetadata>> GetLatestInfoAsync(long lastTimestamp, CancellationToken cancellationToken = default)
+        {
+            // Validate timestamp
+            RequestValidationResult validationResult = Validator.ValidateTimestamp(lastTimestamp);
+
+            if (validationResult.Passed)
+            {
+                // Get message information from database
+                return await this._reportRepo.GetLatestAsync(lastTimestamp, cancellationToken);
+            }
+            else
+            {
+                throw new RequestValidationFailedException(validationResult);
+            }
+        }
+
+        /// <inheritdoc/>
         public async Task<IEnumerable<InfectionReportMetadata>> GetLatestInfoAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             if (region == null)
@@ -78,7 +133,7 @@ namespace CovidSafe.DAL.Services
                 // Validate timestamp
                 validationResult.Combine(Validator.ValidateTimestamp(lastTimestamp));
 
-                if(validationResult.Passed)
+                if (validationResult.Passed)
                 {
                     // Get message information from database
                     return await this._reportRepo.GetLatestAsync(region, lastTimestamp, cancellationToken);
@@ -87,28 +142,6 @@ namespace CovidSafe.DAL.Services
                 {
                     throw new RequestValidationFailedException(validationResult);
                 }
-            }
-        }
-
-        /// <inheritdoc/>
-        public async Task<long> GetLatestRegionDataSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
-        {
-            if(region == null)
-            {
-                throw new ArgumentNullException(nameof(region));
-            }
-
-            RequestValidationResult validationResult = region.Validate();
-            validationResult.Combine(Validator.ValidateTimestamp(lastTimestamp, parameterName: nameof(lastTimestamp)));
-
-            if(validationResult.Passed)
-            {
-                // Get messages from database
-                return await this._reportRepo.GetLatestRegionSizeAsync(region, lastTimestamp, cancellationToken);
-            }
-            else
-            {
-                throw new RequestValidationFailedException(validationResult);
             }
         }
 

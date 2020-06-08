@@ -49,12 +49,9 @@ namespace CovidSafe.API.v20200601.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /api/Messages/List?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0&amp;api-version=2020-06-01
+        ///     GET /api/Messages/List?lastTimestamp=0&amp;api-version=2020-06-01
         ///     
         /// </remarks>
-        /// <param name="lat">Latitude of desired <see cref="Region"/></param>
-        /// <param name="lon">Longitude of desired <see cref="Region"/></param>
-        /// <param name="precision">Precision of desired <see cref="Region"/></param>
         /// <param name="lastTimestamp">Latest <see cref="MatchMessage"/> timestamp on client device, in ms from UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Successful request with results</response>
@@ -65,20 +62,13 @@ namespace CovidSafe.API.v20200601.Controllers.MessageControllers
         [ProducesResponseType(typeof(MessageListResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationResult), StatusCodes.Status400BadRequest)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<MessageListResponse>> GetAsync([Required] double lat, [Required] double lon, [Required] int precision, [Required] long lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<MessageListResponse>> GetAsync([Required] long lastTimestamp, CancellationToken cancellationToken = default)
         {
             try
             {
                 // Pull queries matching parameters
-                var region = new Entities.Geospatial.Region
-                {
-                    LatitudePrefix = lat,
-                    LongitudePrefix = lon,
-                    Precision = precision
-                };
-
                 IEnumerable<InfectionReportMetadata> results = await this._reportService
-                    .GetLatestInfoAsync(region, lastTimestamp, cancellationToken);
+                    .GetLatestInfoAsync(lastTimestamp, cancellationToken);
 
                 // Return using mapped proto object
                 return Ok(this._map.Map<MessageListResponse>(results));
@@ -100,12 +90,9 @@ namespace CovidSafe.API.v20200601.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     HEAD /Messages/List?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0&amp;api-version=2020-06-01
+        ///     HEAD /Messages/List?lastTimestamp=0&amp;api-version=2020-06-01
         ///     
         /// </remarks>
-        /// <param name="lat">Latitude of desired <see cref="Region"/></param>
-        /// <param name="lon">Longitude of desired <see cref="Region"/></param>
-        /// <param name="precision">Precision of desired <see cref="Region"/></param>
         /// <param name="lastTimestamp">Latest <see cref="MatchMessage"/> timestamp on client device, in ms from UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Successful request</response>
@@ -117,20 +104,13 @@ namespace CovidSafe.API.v20200601.Controllers.MessageControllers
         [HttpHead]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> HeadAsync([Required] double lat, [Required] double lon, [Required] int precision, [Required] long lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<ActionResult> HeadAsync([Required] long lastTimestamp, CancellationToken cancellationToken = default)
         {
             try
             {
                 // Pull queries matching parameters
-                var region = new Entities.Geospatial.Region
-                {
-                    LatitudePrefix = lat,
-                    LongitudePrefix = lon,
-                    Precision = precision
-                };
-
                 long size = await this._reportService
-                    .GetLatestRegionDataSizeAsync(region, lastTimestamp, cancellationToken);
+                    .GetLatestDataSizeAsync(lastTimestamp, cancellationToken);
 
                 // Set Content-Length header with calculated size
                 Response.ContentLength = size;

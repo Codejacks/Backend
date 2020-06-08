@@ -60,7 +60,7 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
         }
 
         /// <summary>
-        /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
+        /// <see cref="ListController.GetAsync(long, CancellationToken)"/> 
         /// returns <see cref="BadRequestObjectResult"/> with invalid timestamp
         /// </summary>
         [TestMethod]
@@ -70,9 +70,8 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
             // N/A
 
             // Act
-            // Min Latitude is -90
             ActionResult<MessageListResponse> controllerResponse = await this._controller
-                .GetAsync(10.1234, -10.1234, 4, -1, CancellationToken.None);
+                .GetAsync(-1, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -80,100 +79,13 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
         }
 
         /// <summary>
-        /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestObjectResult"/> with too high Latitude
-        /// </summary>
-        [TestMethod]
-        public async Task GetAsync_BadRequestObjectWithTooHighLatitude()
-        {
-            // Arrange
-            // N/A
-
-            // Act
-            // Max Latitude is 90
-            ActionResult<MessageListResponse> controllerResponse = await this._controller
-                .GetAsync(91, -10.1234, 4, 0, CancellationToken.None);
-
-            // Assert
-            Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
-        }
-
-        /// <summary>
-        /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestObjectResult"/> with too high Longitude
-        /// </summary>
-        [TestMethod]
-        public async Task GetAsync_BadRequestObjectWithTooHighLongitude()
-        {
-            // Arrange
-            // N/A
-
-            // Act
-            // Max Longitude is 180
-            ActionResult<MessageListResponse> controllerResponse = await this._controller
-                .GetAsync(10.1234, 181, 4, 0, CancellationToken.None);
-
-            // Assert
-            Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
-        }
-
-        /// <summary>
-        /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestObjectResult"/> with too high Latitude
-        /// </summary>
-        [TestMethod]
-        public async Task GetAsync_BadRequestObjectWithTooLowLatitude()
-        {
-            // Arrange
-            // N/A
-
-            // Act
-            // Min Latitude is -90
-            ActionResult<MessageListResponse> controllerResponse = await this._controller
-                .GetAsync(-91, -10.1234, 4, 0, CancellationToken.None);
-
-            // Assert
-            Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
-        }
-
-        /// <summary>
-        /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestObjectResult"/> with too low Longitude
-        /// </summary>
-        [TestMethod]
-        public async Task GetAsync_BadRequestObjectWithTooLowLongitude()
-        {
-            // Arrange
-            // N/A
-
-            // Act
-            // Min Longitude is -180
-            ActionResult<MessageListResponse> controllerResponse = await this._controller
-                .GetAsync(10.1234, -181, 4, 0, CancellationToken.None);
-
-            // Assert
-            Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
-        }
-
-        /// <summary>
-        /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
+        /// <see cref="ListController.GetAsync(long, CancellationToken)"/> 
         /// returns <see cref="OkObjectResult"/> with matched parameters
         /// </summary>
         [TestMethod]
         public async Task GetAsync_OkWithMatchedParams()
         {
             // Arrange
-            v20200601.Protos.Region requestedRegion = new Region
-            {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
-                Precision = 4
-            };
-
             IEnumerable<InfectionReportMetadata> response = new List<InfectionReportMetadata>
             {
                 new InfectionReportMetadata
@@ -185,7 +97,6 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
 
             this._repo
                 .Setup(s => s.GetLatestAsync(
-                    It.IsAny<Entities.Geospatial.Region>(),
                     It.IsAny<long>(),
                     CancellationToken.None
                 ))
@@ -194,9 +105,6 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
             // Act
             ActionResult<MessageListResponse> controllerResponse = await this._controller
                 .GetAsync(
-                    requestedRegion.LatitudePrefix,
-                    requestedRegion.LongitudePrefix,
-                    requestedRegion.Precision,
                     DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeMilliseconds(),
                     CancellationToken.None
                 );
@@ -211,7 +119,7 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
         }
 
         /// <summary>
-        /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
+        /// <see cref="ListController.GetAsync(long, CancellationToken)"/> 
         /// returns <see cref="OkObjectResult"/> with unmatched parameters
         /// </summary>
         [TestMethod]
@@ -223,9 +131,6 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
             // Act
             ActionResult<MessageListResponse> controllerResponse = await this._controller
                 .GetAsync(
-                    10.1234,
-                    -10.1234,
-                    4,
                     DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                     CancellationToken.None
                 );
@@ -240,7 +145,7 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
         }
 
         /// <summary>
-        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
+        /// <see cref="ListController.HeadAsync(long, CancellationToken)"/> 
         /// returns <see cref="BadRequestObjectResult"/> with invalid timestamp
         /// </summary>
         [TestMethod]
@@ -250,9 +155,8 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
             // N/A
 
             // Act
-            // Min Latitude is -90
             ActionResult controllerResponse = await this._controller
-                .HeadAsync(10.1234, -10.1234, 4, -1, CancellationToken.None);
+                .HeadAsync(-1, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -260,87 +164,7 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
         }
 
         /// <summary>
-        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestObjectResult"/> with too high Latitude
-        /// </summary>
-        [TestMethod]
-        public async Task HeadAsync_BadRequestObjectWithTooHighLatitude()
-        {
-            // Arrange
-            // N/A
-
-            // Act
-            // Max Latitude is 90
-            ActionResult controllerResponse = await this._controller
-                .HeadAsync(91, -10.1234, 4, 0, CancellationToken.None);
-
-            // Assert
-            Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
-        }
-
-        /// <summary>
-        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestObjectResult"/> with too high Longitude
-        /// </summary>
-        [TestMethod]
-        public async Task HeadAsync_BadRequestObjectWithTooHighLongitude()
-        {
-            // Arrange
-            // N/A
-
-            // Act
-            // Max Longitude is 180
-            ActionResult controllerResponse = await this._controller
-                .HeadAsync(10.1234, 181, 4, 0, CancellationToken.None);
-
-            // Assert
-            Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
-        }
-
-        /// <summary>
-        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestObjectResult"/> with too high Latitude
-        /// </summary>
-        [TestMethod]
-        public async Task HeadAsync_BadRequestObjectWithTooLowLatitude()
-        {
-            // Arrange
-            // N/A
-
-            // Act
-            // Min Latitude is -90
-            ActionResult controllerResponse = await this._controller
-                .HeadAsync(-91, -10.1234, 4, 0, CancellationToken.None);
-
-            // Assert
-            Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
-        }
-
-        /// <summary>
-        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestObjectResult"/> with too low Longitude
-        /// </summary>
-        [TestMethod]
-        public async Task HeadAsync_BadRequestObjectWithTooLowLongitude()
-        {
-            // Arrange
-            // N/A
-
-            // Act
-            // Min Longitude is -180
-            ActionResult controllerResponse = await this._controller
-                .HeadAsync(10.1234, -181, 4, 0, CancellationToken.None);
-
-            // Assert
-            Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
-        }
-
-        /// <summary>
-        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
+        /// <see cref="ListController.HeadAsync(long, CancellationToken)"/> 
         /// returns Content-Length header of appropriate size when parameters match
         /// </summary>
         [TestMethod]
@@ -350,8 +174,7 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
             long repoResponse = 1024;
             this._repo
                 .Setup(
-                    r => r.GetLatestRegionSizeAsync(
-                        It.IsAny<Entities.Geospatial.Region>(),
+                    r => r.GetLatestDataSizeAsync(
                         It.IsAny<long>(),
                         CancellationToken.None
                     )
@@ -361,9 +184,6 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
             // Act
             ActionResult controllerResponse = await this._controller
                 .HeadAsync(
-                    10.1234,
-                    -10.1234,
-                    4,
                     DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                     CancellationToken.None
                 );
@@ -375,7 +195,7 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
         }
 
         /// <summary>
-        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
+        /// <see cref="ListController.HeadAsync(long, CancellationToken)"/> 
         /// returns Content-Length header of '0' when parameters do not return results
         /// </summary>
         [TestMethod]
@@ -387,9 +207,6 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
             // Act
             ActionResult controllerResponse = await this._controller
                 .HeadAsync(
-                    10.1234,
-                    -10.1234,
-                    4,
                     DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                     CancellationToken.None
                 );
