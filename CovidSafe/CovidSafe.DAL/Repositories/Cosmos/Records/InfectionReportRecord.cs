@@ -41,7 +41,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// Current version of record schema
         /// </summary>
         [JsonIgnore]
-        public const string CURRENT_RECORD_VERSION = "2.0.0";
+        public const string CURRENT_RECORD_VERSION = "2.1.0";
 
         /// <summary>
         /// Creates a new <see cref="InfectionReportRecord"/> instance
