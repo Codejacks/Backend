@@ -90,6 +90,12 @@ namespace CovidSafe.API.v20200601.Protos
         [global::ProtoBuf.ProtoMember(2, Name = @"areas")]
         public global::System.Collections.Generic.List<Area> Areas { get; } = new global::System.Collections.Generic.List<Area>();
 
+        [global::ProtoBuf.ProtoMember(3, Name = @"begin_time")]
+        public long BeginTime { get; set; }
+
+        [global::ProtoBuf.ProtoMember(4, Name = @"end_time")]
+        public long EndTime { get; set; }
+
     }
 
     [global::ProtoBuf.ProtoContract()]
@@ -154,12 +160,6 @@ namespace CovidSafe.API.v20200601.Protos
 
         [global::ProtoBuf.ProtoMember(2, Name = @"radius_meters")]
         public float RadiusMeters { get; set; }
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"begin_time")]
-        public long BeginTime { get; set; }
-
-        [global::ProtoBuf.ProtoMember(4, Name = @"end_time")]
-        public long EndTime { get; set; }
 
     }
 

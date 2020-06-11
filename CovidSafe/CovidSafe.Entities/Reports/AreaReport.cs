@@ -21,6 +21,16 @@ namespace CovidSafe.Entities.Reports
         [JsonProperty("Areas", Required = Required.Always)]
         public IList<InfectionArea> Areas { get; set; } = new List<InfectionArea>();
         /// <summary>
+        /// Time report alerting begins
+        /// </summary>
+        [JsonProperty("beginTimestamp", NullValueHandling = NullValueHandling.Ignore)]
+        public long BeginTimestamp { get; set; }
+        /// <summary>
+        /// Time report alerting ends
+        /// </summary>
+        [JsonProperty("endTimestamp", NullValueHandling = NullValueHandling.Ignore)]
+        public long EndTimestamp { get; set; }
+        /// <summary>
         /// Internal UserMessage backing field
         /// </summary>
         [NonSerialized]
@@ -67,6 +77,14 @@ namespace CovidSafe.Entities.Reports
                     nameof(this.UserMessage),
                     ValidationMessages.EmptyMessage
                 );
+            }
+
+            // Validate timestamps if specified
+            if (this.BeginTimestamp > 0 && this.EndTimestamp > 0)
+            {
+                result.Combine(Validator.ValidateTimestamp(this.BeginTimestamp, parameterName: nameof(this.BeginTimestamp)));
+                result.Combine(Validator.ValidateTimestamp(this.EndTimestamp, parameterName: nameof(this.EndTimestamp)));
+                result.Combine(Validator.ValidateTimeRange(this.BeginTimestamp, this.EndTimestamp));
             }
 
             return result;

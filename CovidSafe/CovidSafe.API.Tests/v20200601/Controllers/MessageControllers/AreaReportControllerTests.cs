@@ -58,6 +58,40 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
 
         /// <summary>
         /// <see cref="AreaReportController.PutAsync(AreaMatch, CancellationToken)"/> 
+        /// returns <see cref="BadRequestObjectResult"/> when invalid time ranges are provided 
+        /// with request
+        /// </summary>
+        [TestMethod]
+        public async Task PutAsync_BadRequestObjectWithInvalidTimeRange()
+        {
+            // Arrange
+            AreaMatch requestObj = new AreaMatch
+            {
+                BeginTime = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
+                EndTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                UserMessage = "This is a message"
+            };
+            requestObj.Areas.Add(new Area
+            {
+                Location = new Location
+                {
+                    Latitude = 10.1234,
+                    Longitude = 10.1234
+                },
+                RadiusMeters = 100
+            });
+
+            // Act
+            ActionResult controllerResponse = await this._controller
+                .PutAsync(requestObj, CancellationToken.None);
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
+        }
+
+        /// <summary>
+        /// <see cref="AreaReportController.PutAsync(AreaMatch, CancellationToken)"/> 
         /// returns <see cref="BadRequestObjectResult"/> when no <see cref="Area"/> objects are provided 
         /// with request
         /// </summary>
@@ -67,6 +101,8 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
             // Arrange
             AreaMatch requestObj = new AreaMatch
             {
+                BeginTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                EndTime = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
                 UserMessage = "This is a message"
             };
 
@@ -87,11 +123,13 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
         public async Task PutAsync_BadRequestWithNoUserMessage()
         {
             // Arrange
-            AreaMatch requestObj = new AreaMatch();
+            AreaMatch requestObj = new AreaMatch
+            {
+                BeginTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                EndTime = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds()
+            };
             requestObj.Areas.Add(new Area
             {
-                BeginTime = 0,
-                EndTime = 1,
                 Location = new Location
                 {
                     Latitude = 10.1234,
@@ -119,12 +157,12 @@ namespace CovidSafe.API.v20200601.Tests.Controllers.MessageControllers
             // Arrange
             AreaMatch requestObj = new AreaMatch
             {
+                BeginTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                EndTime = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
                 UserMessage = "User message content"
             };
             requestObj.Areas.Add(new Area
             {
-                BeginTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                EndTime = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
                 Location = new Location
                 {
                     Latitude = 10.1234,

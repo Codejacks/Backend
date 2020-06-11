@@ -98,6 +98,16 @@ namespace CovidSafe.API.v20200505
                     ar => ar.UserMessage,
                     op => op.MapFrom(am => am.UserMessage)
                 )
+                .ForMember(
+                    // Introduced in v20200601, doesn't apply here
+                    ar => ar.BeginTimestamp,
+                    op => op.Ignore()
+                )
+                .ForMember(
+                    // Introduced in v20200601, doesn't apply here
+                    ar => ar.EndTimestamp,
+                    op => op.Ignore()
+                )
                 .ReverseMap();
 
             // SelfReportRequest -> InfectionReport

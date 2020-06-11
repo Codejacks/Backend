@@ -19,7 +19,7 @@ namespace CovidSafe.Entities.Geospatial
         /// <remarks>
         /// Reported in milliseconds (ms) since the UNIX epoch.
         /// </remarks>
-        [JsonProperty("beginTimestampMs", Required = Required.Always)]
+        [JsonProperty("beginTimestampMs", NullValueHandling = NullValueHandling.Ignore)]
         public long BeginTimestamp { get; set; }
         /// <summary>
         /// End time of infection risk period
@@ -27,7 +27,7 @@ namespace CovidSafe.Entities.Geospatial
         /// <remarks>
         /// Reported in milliseconds (ms) since the UNIX epoch.
         /// </remarks>
-        [JsonProperty("endTimestampMs", Required = Required.Always)]
+        [JsonProperty("endTimestampMs", NullValueHandling = NullValueHandling.Ignore)]
         public long EndTimestamp { get; set; }
         /// <summary>
         /// Geographic coordinates of the center of the infection risk zone
@@ -63,10 +63,13 @@ namespace CovidSafe.Entities.Geospatial
                 result.Combine(this.Location.Validate());
             }
 
-            // Validate timestamps
-            result.Combine(Validator.ValidateTimestamp(this.BeginTimestamp, parameterName: nameof(this.BeginTimestamp)));
-            result.Combine(Validator.ValidateTimestamp(this.EndTimestamp, parameterName: nameof(this.EndTimestamp)));
-            result.Combine(Validator.ValidateTimeRange(this.BeginTimestamp, this.EndTimestamp));
+            // Validate timestamps if specified
+            if(this.BeginTimestamp > 0 && this.EndTimestamp > 0)
+            {
+                result.Combine(Validator.ValidateTimestamp(this.BeginTimestamp, parameterName: nameof(this.BeginTimestamp)));
+                result.Combine(Validator.ValidateTimestamp(this.EndTimestamp, parameterName: nameof(this.EndTimestamp)));
+                result.Combine(Validator.ValidateTimeRange(this.BeginTimestamp, this.EndTimestamp));
+            }
 
             return result;
         }

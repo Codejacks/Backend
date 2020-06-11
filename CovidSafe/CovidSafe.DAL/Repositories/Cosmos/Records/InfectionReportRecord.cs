@@ -20,18 +20,6 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         [Required]
         public RegionBoundary RegionBoundary { get; set; }
         /// <summary>
-        /// Distinct Report Message identifier
-        /// </summary>
-        /// <remarks>
-        /// You can only 'update' a partition key by re-creating the record. For 
-        /// an updated report, we still need the original ID to tell clients the 
-        /// record has changed. This property is the consistent identifier, while 
-        /// the default ID property is just the Cosmos unique identifier.
-        /// </remarks>
-        [JsonProperty("reportId", Required = Required.Always)]
-        [Required]
-        public string ReportId { get; set; }
-        /// <summary>
         /// Size of the record <see cref="InfectionReport"/>, in bytes
         /// </summary>
         [JsonProperty("size", Required = Required.Always)]

@@ -177,7 +177,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             // Execute query
             var size = await queryable
                 .Where(r =>
-                    r.Timestamp > timeStampFilter
+                    r.LastUpdate > timeStampFilter
                     && r.Version == InfectionReportRecord.CURRENT_RECORD_VERSION
                 )
                 .Select(r => r.Size)
@@ -203,7 +203,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             // Execute query
             var size = await queryable
                 .Where(r =>
-                    r.Timestamp > timeStampFilter
+                    r.LastUpdate > timeStampFilter
                     && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
                     && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
                     && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude

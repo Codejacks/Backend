@@ -55,20 +55,22 @@ namespace CovidSafe.API.v20200601
             // Area -> InfectionArea
             CreateMap<Area, InfectionArea>()
                 .ForMember(
-                    ia => ia.BeginTimestamp,
-                    op => op.MapFrom(a => a.BeginTime)
-                )
-                .ForMember(
-                    ia => ia.EndTimestamp,
-                    op => op.MapFrom(a => a.EndTime)
-                )
-                .ForMember(
                     ia => ia.Location,
                     op => op.MapFrom(a => a.Location)
                 )
                 .ForMember(
                     ia => ia.RadiusMeters,
                     op => op.MapFrom(a => a.RadiusMeters)
+                )
+                .ForMember(
+                    // Not supported in >= v20200601
+                    ir => ir.BeginTimestamp,
+                    op => op.Ignore()
+                )
+                .ForMember(
+                    // Not supported in >= v20200601
+                    ir => ir.EndTimestamp,
+                    op => op.Ignore()
                 )
                 .ReverseMap();
 
@@ -77,6 +79,14 @@ namespace CovidSafe.API.v20200601
                 .ForMember(
                     ar => ar.Areas,
                     op => op.MapFrom(am => am.Areas)
+                )
+                .ForMember(
+                    ar => ar.BeginTimestamp,
+                    op => op.MapFrom(am => am.BeginTime)
+                )
+                .ForMember(
+                    ar => ar.EndTimestamp,
+                    op => op.MapFrom(am => am.EndTime)
                 )
                 .ForMember(
                     ar => ar.UserMessage,

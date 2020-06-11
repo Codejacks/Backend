@@ -283,11 +283,14 @@ namespace CovidSafe.DAL.Tests.Services
         public async Task PublishAreaAsync_SucceedsOnValidInputs()
         {
             // Arrange
-            AreaReport request = new AreaReport();
-            request.Areas.Add(new InfectionArea
+            AreaReport request = new AreaReport
             {
                 BeginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                 EndTimestamp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
+                UserMessage = "Test user message!"
+            };
+            request.Areas.Add(new InfectionArea
+            {
                 Location = new Coordinates
                 {
                     Latitude = 10.1234,
@@ -295,7 +298,6 @@ namespace CovidSafe.DAL.Tests.Services
                 },
                 RadiusMeters = 100
             });
-            request.UserMessage = "Test user message!";
             string repoResponse = "00000000-0000-0000-0000-0000000000001";
 
             this._repo
@@ -345,12 +347,12 @@ namespace CovidSafe.DAL.Tests.Services
             InfectionReport request = new InfectionReport();
             AreaReport areaMatch = new AreaReport
             {
+                BeginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                EndTimestamp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
                 UserMessage = "Test user message"
             };
             areaMatch.Areas.Add(new InfectionArea
             {
-                BeginTimestamp = 0,
-                EndTimestamp = 1,
                 Location = new Coordinates
                 {
                     Latitude = 10.1234,
@@ -361,8 +363,8 @@ namespace CovidSafe.DAL.Tests.Services
             request.AreaReports.Add(areaMatch);
             request.BluetoothSeeds.Add(new BluetoothSeed
             {
-                EndTimestamp = 1,
-                BeginTimestamp = 0,
+                BeginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                EndTimestamp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
                 Seed = "00000000-0000-0000-0000-000000000000"
             });
 
@@ -411,12 +413,12 @@ namespace CovidSafe.DAL.Tests.Services
             InfectionReport request = new InfectionReport();
             AreaReport areaReport = new AreaReport
             {
+                BeginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                EndTimestamp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
                 UserMessage = "Test user message"
             };
             areaReport.Areas.Add(new InfectionArea
             {
-                BeginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                EndTimestamp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
                 Location = new Coordinates
                 {
                     Latitude = 10.1234,
