@@ -262,8 +262,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
 
             var record = new InfectionReportRecord(report)
             {
-                RegionBoundary = new RegionBoundary(boundary),
-                PartitionKey = InfectionReportRecord.GetPartitionKey(region)
+                RegionBoundary = new RegionBoundary(boundary)
             };
 
             ItemResponse<InfectionReportRecord> response = await this.Container
@@ -290,8 +289,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
                 {
                     RegionBoundary = new RegionBoundary(
                         RegionHelper.GetRegionBoundary(r)
-                    ),
-                    PartitionKey = InfectionReportRecord.GetPartitionKey(r)
+                    )
                 }).GroupBy(r => r.PartitionKey);
 
             // Begin batch operation

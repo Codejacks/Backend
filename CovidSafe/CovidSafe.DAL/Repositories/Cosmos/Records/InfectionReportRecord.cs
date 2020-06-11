@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 using CovidSafe.DAL.Helpers;
 using CovidSafe.Entities.Geospatial;
@@ -18,6 +19,18 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         [JsonProperty("RegionBoundary", Required = Required.Always)]
         [Required]
         public RegionBoundary RegionBoundary { get; set; }
+        /// <summary>
+        /// Distinct Report Message identifier
+        /// </summary>
+        /// <remarks>
+        /// You can only 'update' a partition key by re-creating the record. For 
+        /// an updated report, we still need the original ID to tell clients the 
+        /// record has changed. This property is the consistent identifier, while 
+        /// the default ID property is just the Cosmos unique identifier.
+        /// </remarks>
+        [JsonProperty("reportId", Required = Required.Always)]
+        [Required]
+        public string ReportId { get; set; }
         /// <summary>
         /// Size of the record <see cref="InfectionReport"/>, in bytes
         /// </summary>
@@ -41,23 +54,16 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// Creates a new <see cref="InfectionReportRecord"/> instance
         /// </summary>
         /// <param name="report"><see cref="InfectionReport"/> to store</param>
-        public InfectionReportRecord(InfectionReport report)
+        public InfectionReportRecord(InfectionReport report) : base()
         {
             this.Size = PayloadSizeHelper.GetSize(report);
             this.Value = report;
             this.Version = CURRENT_RECORD_VERSION;
-        }
 
-        /// <summary>
-        /// Generates a new Partition Key value for the record
-        /// </summary>
-        /// <returns>Partition Key value</returns>
-        public static string GetPartitionKey(Region region)
-        {
-            int lat = (int)PrecisionHelper.Round(region.LatitudePrefix, 0);
-            int lon = (int)PrecisionHelper.Round(region.LongitudePrefix, 0);
-            
-            return $"{lat},{lon}";
+            // Create partition key, which is the last update timestamp round down to the nearest day
+            DateTimeOffset timestamp = DateTimeOffset.FromUnixTimeMilliseconds(this.Timestamp);
+            // Convert to Unix time (ms) in partition
+            this.PartitionKey = timestamp.Date.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds.ToString();
         }
     }
 }

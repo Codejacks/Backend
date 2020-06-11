@@ -21,6 +21,11 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         [JsonProperty("id")]
         public string Id { get; set; }
         /// <summary>
+        /// Timestamp of last record update, in ms since UNIX epoch
+        /// </summary>
+        [JsonProperty("lastUpdated", Required = Required.Always)]
+        public long LastUpdate { get; set; }
+        /// <summary>
         /// Partition Key value
         /// </summary>
         [JsonProperty("partitionKey", Required = Required.Always)]
@@ -51,6 +56,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         {
             // Set default local values
             this.Id = Guid.NewGuid().ToString();
+            this.LastUpdate = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             this.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
     }
